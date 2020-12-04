@@ -1,0 +1,44 @@
+<html>
+    <head>
+        <title>Breuv'IF</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="css/main.css">
+    </head>
+    
+    <body>
+        <div id="wrapper">  
+            <h1>Breuv'IF</h1>
+            <input id="searchBar" type="text" placeholder="">
+            <input id="searchButton" type="button" value="Search Beer" onclick="">
+           <div id="searchResult">
+
+           </div>
+        </div>
+        <script>
+            window.onload = function() {
+                document.getElementById("profile").style.opacity = 0.95;
+                document.getElementById("profile").style.padding = "3em 2.5em 1.5em 2.5em";
+            }
+        </script>
+        <script src="three.r119.min.js"></script>
+        <script src="vanta.fog.min.js"></script>
+        <script>
+            VANTA.FOG({
+                el: "body",
+                mouseControls: true,
+                touchControls: true,
+                gyroControls: false,
+                minHeight: 200.00,
+                minWidth: 200.00,
+                highlightColor: 0xf2af3e,
+                midtoneColor: 0xf7f0a5,
+                lowlightColor: 0xf56445,
+                baseColor: 0x7f473b,
+                blurFactor: 0.59,
+                speed: 4.30,
+                zoom: 3.00
+            })
+            </script>
+    </body>
+
+</html>

@@ -1,0 +1,48 @@
+h1{
+    font-weight: bolder;
+    font-size: 5em;
+}
+
+#searchBar {
+    display: block;
+    width: 15em;
+    font-size: 2em;
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
+    letter-spacing: 0.1em;
+    text-align: center;
+    margin: 1em;
+}
+
+#searchButton {
+    display: block;
+    font-size: 1.5em;
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
+    letter-spacing: 0.1em;
+    text-align: center;
+}
+
+
+
+
+
+body{
+    width: 100%;
+    background-image: url(../images/background.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: 0;
+    color: #311616;
+    font-family: "Source Sans Pro", Helvetica, sans-serif;
+    font-size: 12pt;
+    font-weight: 300;
+    line-height: 1.2em;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+}
+
+    #wrapper{
+        min-height: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
