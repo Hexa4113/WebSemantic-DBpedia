@@ -1,4 +1,6 @@
-function queryBeer() {
+let allBeers = [];
+
+async function queryBeer() {
   let url = 'http://dbpedia.org/sparql';
   let query = [
     'PREFIX dbpedia2: <http://dbpedia.org/resource/> PREFIX dbpedia2: <http://dbpedia.org/property/>',
@@ -47,24 +49,89 @@ function queryBeer() {
 
   var queryURL = encodeURI(url + '?query=' + query + '&format=json');
 
-  fetch(queryURL, {
+  await fetch(queryURL, {
     method: 'GET',
   })
     .then((response) => response.json())
     .then((data) => {
-      let searchResult = document.getElementById('searchResult');
       console.log(data);
       let beers = data.results.bindings;
       for (let x in beers) {
         let link = beers[x].beer.value;
         let name = link.substring(link.lastIndexOf('/') + 1);
-        let line = document.createElement('a');
-        line.setAttribute('href', '#');
-        line.setAttribute('link', link);
-        line.style.display = 'block';
-        line.addEventListener('click', () => console.log('test'));
-        line.append(name);
-        searchResult.appendChild(line);
+        let formattedName = name.replaceAll('_', ' ');
+
+        let beer = {
+          id: name,
+          name: formattedName,
+          link: link,
+        };
+
+        allBeers.push(beer);
       }
     });
+  console.log(allBeers);
+  setAutoComplete();
+}
+
+async function queryInfosOnBeer() {
+  var input = document.getElementById('searchBar');
+  let beer = allBeers.find((x) => x.name == input.value);
+  console.log(beer);
+  var url = 'http://dbpedia.org/sparql';
+  var query = [
+    'PREFIX dbpedia: <http://dbpedia.org/resource/>',
+    "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+    'SELECT ?comment ?label',
+    'WHERE {',
+    '{ <http://dbpedia.org/resource/' + beer.id + '> rdfs:comment ?comment }',
+    'UNION',
+    '{ <http://dbpedia.org/resource/' + beer.id + '> rdfs:label ?label }',
+    '}',
+  ].join(' ');
+  console.log(query);
+
+  let queryURL = encodeURI(url + '?query=' + query + '&format=json');
+  await fetch(queryURL, {
+    method: 'GET',
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      let comment = data.results.bindings.comment.value;
+      let divInfos = document.getElementById('BeerInfos');
+      let b = document.createElement('div');
+      b.textContent = comment;
+      divInfos.innerHTML = '';
+      divInfos.appendChild(b);
+    });
+}
+
+function setAutoComplete() {
+  let input = document.getElementById('searchBar');
+  input.addEventListener('input', (e) => {
+    let value = e.target.value;
+    console.log(value);
+
+    let searchResult = document.getElementById('searchResult');
+    searchResult.innerHTML = '';
+
+    for (let i = 0; i < allBeers.length; i++) {
+      if (allBeers[i].name.substring(0, value.length).toUpperCase() == value.toUpperCase() && value.length >= 2) {
+        let res = allBeers[i].name;
+        let b = document.createElement('div');
+        b.innerHTML = '<strong>' + res + '</strong>';
+
+        b.addEventListener('click', (event) => {
+          input.value = event.target.textContent;
+        });
+        if (searchResult.childElementCount < 6) searchResult.appendChild(b);
+        console.log('match : ' + allBeers[i].name);
+      }
+    }
+  });
+}
+
+function capitalizeFirstLetter(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
