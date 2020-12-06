@@ -1,3 +1,8 @@
+:root {
+  --error-color: #ff2e2e;
+  --orange-color: #ffa42e;
+}
+
 body {
   margin: 0;
   color: black;
@@ -5,8 +10,15 @@ body {
   font-size: 20px;
 }
 
-input, button {
+input,
+button {
   font-size: 20px;
+}
+
+input {
+  padding: 9px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
 h1 {
@@ -18,13 +30,16 @@ h1 {
   position: absolute;
 }
 
-
 #menu li {
   list-style-type: none;
   display: inline;
   padding: 5px 10px 5px 10px;
   color: white;
   font-weight: bold;
+}
+
+#menu li:nth-of-type(1) {
+  color: var(--orange-color);
 }
 
 #banner {
@@ -44,21 +59,28 @@ h1 {
   margin-top: -30px;
   font-style: italic;
   font-size: 20px;
+  font-family: 'Lora';
+}
+
+#search {
+  width: fit-content;
+  margin: 20px auto 0 auto;
+  justify-content: center;
+  text-align: center;
 }
 
 #searchBar {
-  display: block;
+  display: inline-block;
   width: 300px;
   font-family: 'Source Sans Pro', Helvetica, sans-serif;
   text-align: left;
-  margin: 20px auto 0 auto;
 }
 
 #searchResult {
+  position: absolute;
   display: block;
   width: 300px;
   text-align: left;
-  margin: 0 auto 0 auto;
 }
 
 #searchResult > div {
@@ -67,6 +89,8 @@ h1 {
   border: 1px solid #ccc;
   border-collapse: true;
   cursor: pointer;
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
 }
 
 #searchResult > div:hover {
@@ -74,17 +98,33 @@ h1 {
 }
 
 #searchButton {
-  display: block;
+  display: inline-block;
   text-align: center;
-  margin: 20px auto 0 auto;
+  margin: 0 auto 0 auto;
+}
+
+.notfoundbeer {
+  color: var(--error-color);
+  font-weight: bold;
+  margin: 5px 0 5px 0;
+  display: none;
+}
+
+.btn {
+  padding: 10px;
+  background-color: var(--orange-color);
+  border: 0;
+  border-radius: 5px;
 }
 
 #beerInfos {
   display: none;
-  background-color: white;
+  background-color: #eee;
   border: 0;
   border-radius: 10px;
   width: 80%;
   margin: 10px auto 10px auto;
   padding: 10px;
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
 }
