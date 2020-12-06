@@ -1,33 +1,37 @@
 <html lang="en">
-    <head>
-        <title>Breuv'IF</title>
-        <meta charset="utf-8" />
-        <link rel="stylesheet" href="css/main.css">
-    </head>
-    
-    <body>
-        <div id="wrapper">  
-            <h1>Breuv'IF</h1>
-            <input id="searchBar" type="text" placeholder="">
-            <div id="searchResult">
-                
-            </div>
-            <input id="searchButton" type="button" value="Search Beer" onclick="queryInfosOnBeer(); closeList()">
-            <div id="beerInfos">
+  <head>
+    <title>Breuv'IF</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
 
-            </div>
-           
-        </div>
-        <script>
-            window.onload = function() {
-                // document.getElementById("profile").style.opacity = 0.95;
-                // document.getElementById("profile").style.padding = "3em 2.5em 1.5em 2.5em";
-                queryBeer();
-            }
-        </script>
-        <script src="three.r119.min.js"></script>
-        <script src="vanta.fog.min.js"></script>
-        <script>
+  <body>
+      <nav id="menu">
+          <ul>
+              <li>Accueil</li>
+              <li>Liste des bières</li>
+          </ul>
+      </nav>
+    <div id="banner">
+        <h1>Breuv'IF</h1>
+        <div>"Le rire est à l'homme ce que la bière est à la pression"</div>
+    </div>
+    
+    <input id="searchBar" type="text" placeholder="" />
+
+    <div id="searchResult"></div>
+    <input id="searchButton" type="button" value="Search Beer" onclick="queryInfosOnBeer(); closeList()" />
+    <div id="beerInfos"></div>
+    <script>
+      window.onload = function () {
+        // document.getElementById("profile").style.opacity = 0.95;
+        // document.getElementById("profile").style.padding = "3em 2.5em 1.5em 2.5em";
+        queryBeer();
+      };
+    </script>
+    <script src="three.r119.min.js"></script>
+    <script src="vanta.fog.min.js"></script>
+    <!-- <script>
             VANTA.FOG({
                 el: "body",
                 mouseControls: true,
@@ -43,8 +47,7 @@
                 speed: 4.30,
                 zoom: 3.00
             })
-            </script>
-             <script src="js/scriptQuery.js"></script>
-    </body>
-
+            </script> -->
+    <script src="js/scriptQuery.js"></script>
+  </body>
 </html>

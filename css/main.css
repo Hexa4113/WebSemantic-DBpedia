@@ -1,64 +1,82 @@
 body {
-  width: 100%;
-  background-image: url(../images/background.jpg);
-  background-repeat: no-repeat;
-  background-size: cover;
   margin: 0;
-  color: #311616;
+  color: black;
   font-family: 'Source Sans Pro', Helvetica, sans-serif;
-  font-size: 12pt;
-  font-weight: 300;
-  line-height: 1.2em;
-  text-transform: uppercase;
+  font-size: 20px;
+}
+
+input, button {
+  font-size: 20px;
 }
 
 h1 {
   font-weight: bolder;
-  font-size: 5em;
+  font-size: 72px;
+}
+
+#menu {
+  position: absolute;
+}
+
+
+#menu li {
+  list-style-type: none;
+  display: inline;
+  padding: 5px 10px 5px 10px;
+  color: white;
+  font-weight: bold;
+}
+
+#banner {
+  width: 100%;
+  height: 600px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../Biere_wallpaper.jpg');
+  background-position-x: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+#banner > div {
+  margin-top: -30px;
+  font-style: italic;
+  font-size: 20px;
 }
 
 #searchBar {
   display: block;
   width: 300px;
-  font-size: 20px;
   font-family: 'Source Sans Pro', Helvetica, sans-serif;
   text-align: left;
+  margin: 20px auto 0 auto;
 }
 
 #searchResult {
-    display: block;
-    width: 300px;
-    font-size: 20px;
-    font-family: 'Source Sans Pro', Helvetica, sans-serif;
-    text-align: left;
+  display: block;
+  width: 300px;
+  text-align: left;
+  margin: 0 auto 0 auto;
 }
 
 #searchResult > div {
-    background-color: white;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-collapse: true;
-    cursor: pointer;
+  background-color: white;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-collapse: true;
+  cursor: pointer;
 }
 
 #searchResult > div:hover {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 #searchButton {
   display: block;
-  font-size: 1.5em;
-  font-family: 'Source Sans Pro', Helvetica, sans-serif;
-  letter-spacing: 0.1em;
   text-align: center;
-  margin-top: 20px;
-}
-
-#wrapper {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+  margin: 20px auto 0 auto;
 }
 
 #beerInfos {
@@ -69,5 +87,4 @@ h1 {
   width: 80%;
   margin: 10px auto 10px auto;
   padding: 10px;
-  text-transform: none;
 }
