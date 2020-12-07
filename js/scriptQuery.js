@@ -8,41 +8,18 @@ async function queryBeer() {
     'SELECT DISTINCT ?beer WHERE {',
 
     '{',
-    '{?beer dbp:type dbr:Beer. }',
-    'UNION',
-    '{?e skos:broader  dbc:Beer_by_country.',
-    '?beer dct:subject ?e .}',
+    '{?beer dbp:type dbr:Beer.}',
     'UNION',
     '{?beer plg:hypernym dbr:Beer}',
-    '}',
+    'UNION',
+    '{?e skos:broader  dbc:Beer_by_country.',
+    '?beer dct:subject ?e .}}',
 
     'Minus',
-    '{?beer rdfs:label ?label.',
-    'filter regex(?label, "Beer in"). }',
+    '{?beer dbo:product dbr:Beer}',
     'Minus',
     '{?beer rdfs:label ?label.',
-    'filter regex(?label, "Brewer"). }',
-    'Minus',
-    '{?beer rdfs:label ?label.',
-    'filter regex(?label, "List"). }',
-    'Minus',
-    '{?beer dbo:type dbr:Brewery.}',
-    'Minus',
-    '{?beer dbo:type dbr:Brewing.}',
-    'Minus',
-    '{?beer dbo:type dbo:Company.}',
-    'Minus',
-    '{?beer rdf:type dbo:Company.}',
-    'Minus',
-    '{?beer rdf:type dbo:Brewery.}',
-    'Minus',
-    '{?beer plg:hypernym dbr:Museum}',
-    'Minus',
-    '{?beer plg:hypernym dbr:Brewery}',
-    'Minus',
-    '{?beer plg:hypernym dbr:Company}',
-    'Minus',
-    '{?beer plg:hypernym dbr:Group}',
+    'filter regex(?label, "(Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
     '}',
     'ORDER BY ASC(?beer)',
   ].join(' ');
@@ -86,13 +63,18 @@ async function queryInfosOnBeer() {
     document.querySelector('.notfoundbeer').style.display = 'none';
     var url = 'http://dbpedia.org/sparql';
     var query = [
-      'PREFIX dbpedia: <http://dbpedia.org/resource/>',
+      'PREFIX dbr: <http://dbpedia.org/resource/>',
       'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>',
-      'SELECT ?comment ?label',
+      'PREFIX dbpedia: <http://dbpedia.org/>',
+      'SELECT ?comment ?label ?origin ?origin2',
       'WHERE {',
       '{ <http://dbpedia.org/resource/' + beer.id + '> rdfs:comment ?comment }',
       'UNION',
       '{ <http://dbpedia.org/resource/' + beer.id + '> rdfs:label ?label }',
+      'UNION',
+      '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/ontology/origin> ?origin }',
+      'UNION',
+      '{ <http://dbpedia.org/resource/' + beer.id + '> <http://purl.org/dc/terms/subject> ?origin2 }',
       '}',
     ].join(' ');
     console.log(query);
@@ -107,15 +89,29 @@ async function queryInfosOnBeer() {
         console.log('Data', data);
         let res = data.results.bindings;
 
-        let b = document.createElement('div');
+        let desc = document.createElement('div');
+        let origin = document.createElement('div');
+        let originFound = false;
         for (let i = 0; i < res.length; i++) {
           console.log(res[i]);
           if (res[i].comment && res[i].comment['xml:lang'] == 'en') {
-            b.textContent = res[i].comment.value;
+            desc.innerHTML = '<strong>Description</strong> : ' + res[i].comment.value;
+          } else if (res[i].origin) {
+            let o = res[i].origin.value;
+            let val = o.substring(o.lastIndexOf('/') + 1);
+            origin.innerHTML = '<strong>Origin</strong> : ' + val;
+            originFound = true;
+          } else if (res[i].origin2 && !originFound) {
+            const regex = /^http:\/\/dbpedia\.org\/resource\/Category:Beer_in.+$/gm;
+            if (res[i].origin2.value.match(regex)) {
+              let val = res[i].origin2.value.substring(res[i].origin2.value.lastIndexOf('_') + 1);
+              origin.innerHTML = '<strong>Origin</strong> : ' + val;
+            }
           }
         }
         divInfos.innerHTML = '';
-        divInfos.appendChild(b);
+        divInfos.appendChild(desc);
+        divInfos.appendChild(origin);
         divInfos.style.display = 'block';
       });
   }
