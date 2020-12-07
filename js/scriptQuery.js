@@ -66,7 +66,7 @@ async function queryInfosOnBeer() {
       'PREFIX dbr: <http://dbpedia.org/resource/>',
       'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>',
       'PREFIX dbpedia: <http://dbpedia.org/>',
-      'SELECT ?comment ?label ?origin ?origin2',
+      'SELECT ?comment ?label ?origin ?origin2 ?abv',
       'WHERE {',
       '{ <http://dbpedia.org/resource/' + beer.id + '> rdfs:comment ?comment }',
       'UNION',
@@ -75,6 +75,8 @@ async function queryInfosOnBeer() {
       '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/ontology/origin> ?origin }',
       'UNION',
       '{ <http://dbpedia.org/resource/' + beer.id + '> <http://purl.org/dc/terms/subject> ?origin2 }',
+      'UNION',
+      '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/property/abv> ?abv }',
       '}',
     ].join(' ');
     console.log(query);
@@ -92,14 +94,15 @@ async function queryInfosOnBeer() {
         let desc = document.createElement('div');
         let origin = document.createElement('div');
         let originFound = false;
+        let abv = document.createElement('div');
         for (let i = 0; i < res.length; i++) {
           console.log(res[i]);
           if (res[i].comment && res[i].comment['xml:lang'] == 'en') {
-            desc.innerHTML = '<strong>Description</strong> : ' + res[i].comment.value;
+            desc.innerHTML = '<strong class="orange">Description</strong> : ' + res[i].comment.value;
           } else if (res[i].origin) {
             let o = res[i].origin.value;
             let val = o.substring(o.lastIndexOf('/') + 1);
-            origin.innerHTML = '<strong>Origin</strong> : ' + val;
+            origin.innerHTML = '<strong class="orange">Origin</strong> : ' + val;
             originFound = true;
           } else if (res[i].origin2 && !originFound) {
             const regex = /^http:\/\/dbpedia\.org\/resource\/Category:Beer_in.+$/gm;
@@ -107,11 +110,16 @@ async function queryInfosOnBeer() {
               let val = res[i].origin2.value.substring(res[i].origin2.value.lastIndexOf('_') + 1);
               origin.innerHTML = '<strong>Origin</strong> : ' + val;
             }
+          } else if (res[i].abv) {
+            let val = res[i].abv.value;
+            abv.innerHTML = '<strong class="orange">Alcool by volume</strong> : ' + val + ' %';
           }
         }
         divInfos.innerHTML = '';
         divInfos.appendChild(desc);
         divInfos.appendChild(origin);
+        divInfos.appendChild(abv);
+
         divInfos.style.display = 'block';
       });
   }
