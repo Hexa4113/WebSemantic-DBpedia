@@ -66,7 +66,7 @@ async function queryInfosOnBeer() {
       'PREFIX dbr: <http://dbpedia.org/resource/>',
       'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>',
       'PREFIX dbpedia: <http://dbpedia.org/>',
-      'SELECT ?comment ?label ?origin ?origin2 ?abv',
+      'SELECT ?comment ?label ?origin ?origin2 ?abv ?introduced',
       'WHERE {',
       '{ <http://dbpedia.org/resource/' + beer.id + '> rdfs:comment ?comment }',
       'UNION',
@@ -77,6 +77,8 @@ async function queryInfosOnBeer() {
       '{ <http://dbpedia.org/resource/' + beer.id + '> <http://purl.org/dc/terms/subject> ?origin2 }',
       'UNION',
       '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/property/abv> ?abv }',
+      'UNION',
+      '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/property/introduced> ?introduced }',
       '}',
     ].join(' ');
     console.log(query);
@@ -95,6 +97,7 @@ async function queryInfosOnBeer() {
         let origin = document.createElement('div');
         let originFound = false;
         let abv = document.createElement('div');
+        let introduced = document.createElement('div');
         for (let i = 0; i < res.length; i++) {
           console.log(res[i]);
           if (res[i].comment && res[i].comment['xml:lang'] == 'en') {
@@ -108,17 +111,21 @@ async function queryInfosOnBeer() {
             const regex = /^http:\/\/dbpedia\.org\/resource\/Category:Beer_in.+$/gm;
             if (res[i].origin2.value.match(regex)) {
               let val = res[i].origin2.value.substring(res[i].origin2.value.lastIndexOf('_') + 1);
-              origin.innerHTML = '<strong>Origin</strong> : ' + val;
+              origin.innerHTML = '<strong class="orange">Origin</strong> : ' + val;
             }
           } else if (res[i].abv) {
             let val = res[i].abv.value;
             abv.innerHTML = '<strong class="orange">Alcool by volume</strong> : ' + val + ' %';
-          }
+          } else if (res[i].introduced) {
+            let val = res[i].introduced.value;
+            introduced.innerHTML = '<strong class="orange">Date</strong> : ' + val;
+          } 
         }
         divInfos.innerHTML = '';
         divInfos.appendChild(desc);
         divInfos.appendChild(origin);
         divInfos.appendChild(abv);
+        divInfos.appendChild(introduced);
 
         divInfos.style.display = 'block';
       });
