@@ -21,18 +21,42 @@
       <div>"Le rire est à l'homme ce que la bière est à la pression"</div>
     </div>
     <div id="search">
-      <h3 style="font-family: Lora;">Find your beer</h3>
+      <h3>Find your beer</h3>
       <input id="searchBar" type="text" placeholder="Enter a beer ..." list="cityname" />
 
       <div id="searchResult"></div>
-      <input id="searchButton" class="btn" type="button" value="Search Beer" onclick="queryInfosOnBeer(); closeList()" />
+      <button id="searchButton" class="btn" onclick="queryInfosOnBeer(); closeList()" >Search Beer</button>
       <div class="notfoundbeer">Beer not found. Please try again.</div>
     </div>
 
     <div id="beerInfos"></div>
+
+    <div class="container-dark">
+      <div id="beerByCountry">
+        <h3>Beer by country</h3>
+        <ul>
+          <li>France</li>
+          <li>Belgium</li>
+          <li>Germany</li>
+          <li>UK</li>
+          <li>Italy</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container">
+      <div id="typesOfBeer">
+        <h3>Types of beer</h3>
+        <select name="selectTypeOfBeer" id="selectTypeOfBeer">
+          
+        </select>
+      </div>
+    </div>
+
     <script>
       window.onload = function () {
         queryBeer();
+        queryAllTypes();
       };
     </script>
     <script src="js/scriptQuery.js"></script>

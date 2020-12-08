@@ -11,8 +11,13 @@ body {
 }
 
 input,
-button {
+button,
+select {
   font-size: 20px;
+}
+
+button {
+  cursor: pointer;
 }
 
 input {
@@ -24,6 +29,11 @@ input {
 h1 {
   font-weight: bolder;
   font-size: 72px;
+}
+
+h3 {
+  font-size: 40px;
+  font-family: 'Lora';
 }
 
 #menu {
@@ -135,4 +145,53 @@ h1 {
 
 #beerInfos > div {
   margin: 10px 0 10px 0;
+}
+
+#beerByCountry {
+  width: 80%;
+  margin: 0 auto 0 auto;
+}
+
+#beerByCountry ul {
+  list-style-type: none;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+}
+
+#beerByCountry li {
+  display: inline-block;
+  margin: auto 10px auto 10px;
+  padding: 10px;
+  min-width: 100px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  transition-duration: 0.5s;
+}
+
+#beerByCountry li:hover {
+  background-color: var(--orange-color);
+  transition-duration: 0.5s;
+}
+
+.container-dark {
+  background-color: #eee;
+  padding: 10px 0 10px 0;
+  margin: 20px 0 20px 0;
+}
+
+.container {
+  padding: 10px 0 10px 0;
+  margin: 20px 0 20px 0;
+}
+
+#typesOfBeer {
+  width: 80%;
+  margin: 0 auto 0 auto;
+}
+
+#typesOfBeer h3 {
+  text-align: right;
 }

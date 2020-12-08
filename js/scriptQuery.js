@@ -1,5 +1,7 @@
 let allBeers = [];
 
+let allTypes = [];
+
 async function queryBeer() {
   let url = 'http://dbpedia.org/sparql';
   let query = [
@@ -66,7 +68,7 @@ async function queryInfosOnBeer() {
       'PREFIX dbr: <http://dbpedia.org/resource/>',
       'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>',
       'PREFIX dbpedia: <http://dbpedia.org/>',
-      'SELECT ?comment ?label ?origin ?origin2 ?abv ?introduced',
+      'SELECT ?comment ?label ?origin ?origin2 ?abv ?introduced ?year ?type',
       'WHERE {',
       '{ <http://dbpedia.org/resource/' + beer.id + '> rdfs:comment ?comment }',
       'UNION',
@@ -79,6 +81,20 @@ async function queryInfosOnBeer() {
       '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/property/abv> ?abv }',
       'UNION',
       '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/property/introduced> ?introduced }',
+      'UNION',
+      '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/property/year> ?year }',
+      'UNION',
+      '{<http://dbpedia.org/resource/' + beer.id + '> dbp:style ?type}',
+
+      'UNION',
+      '{',
+      '{{?type dct:subject dbc:Beer_styles.}',
+      'UNION',
+      '{?type dct:subject dbc:Types_of_beer.}}',
+      '?type rdfs:label ?label.',
+      '<http://dbpedia.org/resource/' + beer.id + '> dbo:abstract ?desc.',
+      'filter regex(?desc,CONCAT("(", ?label, ")"),"i").',
+      '}',
       '}',
     ].join(' ');
     console.log(query);
@@ -94,16 +110,23 @@ async function queryInfosOnBeer() {
         let res = data.results.bindings;
 
         let desc = document.createElement('div');
+
         let origin = document.createElement('div');
         let originFound = false;
+
         let abv = document.createElement('div');
+
         let introduced = document.createElement('div');
+        let introducedFound = false;
+
+        let type = document.createElement('div');
 
         desc.innerHTML = '<strong class="orange">Description</strong> : Not found';
         origin.innerHTML = '<strong class="orange">Origin</strong> : Not found';
         abv.innerHTML = '<strong class="orange">Alcool by volume</strong> : Not found';
         introduced.innerHTML = '<strong class="orange">Date</strong> : Not found';
-        
+        type.innerHTML = '<strong class="orange">Type</strong> : Not found';
+
         for (let i = 0; i < res.length; i++) {
           console.log(res[i]);
           if (res[i].comment && res[i].comment['xml:lang'] == 'en') {
@@ -125,17 +148,72 @@ async function queryInfosOnBeer() {
           } else if (res[i].introduced) {
             let val = res[i].introduced.value;
             introduced.innerHTML = '<strong class="orange">Date</strong> : ' + val;
-          } 
+            introducedFound = true;
+          } else if (res[i].year && !introducedFound) {
+            let val = res[i].year.value;
+            introduced.innerHTML = '<strong class="orange">Date</strong> : ' + val;
+          } else if (res[i].type) {
+            let val = res[i].type.value.substring(res[i].type.value.lastIndexOf('/') + 1);
+            type.innerHTML = '<strong class="orange">Type</strong> : ' + val;
+          }
         }
         divInfos.innerHTML = '';
         divInfos.appendChild(desc);
         divInfos.appendChild(origin);
         divInfos.appendChild(abv);
         divInfos.appendChild(introduced);
+        divInfos.appendChild(type);
 
         divInfos.style.display = 'block';
       });
   }
+}
+
+async function queryAllTypes() {
+  var url = 'http://dbpedia.org/sparql';
+  var query = [
+    'PREFIX plg: <http://purl.org/linguistics/gold/>',
+    'SELECT DISTINCT ?type WHERE {',
+    '{',
+    '{{?type dct:subject dbc:Beer_styles.}',
+    'UNION',
+    '{?type dct:subject dbc:Types_of_beer.}}',
+    '}',
+    '}',
+    'ORDER BY ASC(?type)',
+  ].join(' ');
+  console.log(query);
+
+  let queryURL = encodeURI(url + '?query=' + query + '&format=json');
+  queryURL = queryURL.replace(/#/g, '%23');
+  await fetch(queryURL, {
+    method: 'GET',
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Data', data);
+      let res = data.results.bindings;
+      console.log(res);
+
+      const containerList = document.querySelector('#typesOfBeer select');
+      containerList.addEventListener('change', (e) => {
+        console.log(e.target.value);
+        // TODO: Adding query all beer by the selected type
+      });
+      for (let i = 0; i < res.length; i++) {
+        let option = document.createElement('option');
+        let typeFormatted = res[i].type.value.substring(res[i].type.value.lastIndexOf('/') + 1);
+        typeFormatted = typeFormatted.replaceAll('_', ' ');
+        option.innerHTML = typeFormatted;
+        containerList.appendChild(option);
+
+        allTypes.push({ name: typeFormatted, link: res[i].type.value });
+      }
+    });
+}
+
+async function queryBeersByType(type) {
+  
 }
 
 function setAutoComplete() {
