@@ -1,0 +1,11 @@
+PREFIX plg: <http://purl.org/linguistics/gold/>
+SELECT DISTINCT ?type WHERE {
+   
+{
+  {{?type dct:subject dbc:Beer_styles.}
+UNION
+  {?type dct:subject dbc:Types_of_beer.}}
+
+}
+}
+ORDER BY ASC(?type)
