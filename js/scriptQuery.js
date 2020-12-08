@@ -98,6 +98,12 @@ async function queryInfosOnBeer() {
         let originFound = false;
         let abv = document.createElement('div');
         let introduced = document.createElement('div');
+
+        desc.innerHTML = '<strong class="orange">Description</strong> : Not found';
+        origin.innerHTML = '<strong class="orange">Origin</strong> : Not found';
+        abv.innerHTML = '<strong class="orange">Alcool by volume</strong> : Not found';
+        introduced.innerHTML = '<strong class="orange">Date</strong> : Not found';
+        
         for (let i = 0; i < res.length; i++) {
           console.log(res[i]);
           if (res[i].comment && res[i].comment['xml:lang'] == 'en') {
