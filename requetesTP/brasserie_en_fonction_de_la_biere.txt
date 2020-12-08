@@ -1,0 +1,38 @@
+PREFIX plg: <http://purl.org/linguistics/gold/>
+SELECT DISTINCT  ?brasserie WHERE {
+
+{
+{dbr:Heineken dbo:manufacturer ?brasserie}
+Union
+{dbr:Heineken dbp:brewery ?brasserie}
+Union
+{  
+  {{?brasserie dbo:product dbr:Beer}
+  UNION
+  {?brasserie rdf:type dbo:Brewery}
+  UNION
+  {?brasserie plg:hypernym dbr:Brewery}
+  UNION 
+  {?brasserie dbo:industry dbr:Brewing}}
+  ?brasserie dbo:abstract ?desc.
+  dbr:Heineken rdfs:label ?name.
+  filter regex(?desc,CONCAT("(", ?name, ")"),"i").
+
+}
+Union
+{  
+  {{?brasserie dbo:product dbr:Beer}
+  UNION
+  {?brasserie rdf:type dbo:Brewery}
+  UNION
+  {?brasserie plg:hypernym dbr:Brewery}
+  UNION 
+  {?brasserie dbo:industry dbr:Brewing}}
+  ?brasserie rdfs:label ?name.
+  dbr:Heineken dbo:abstract ?desc .
+  filter regex(?desc,CONCAT("(", ?name, ")"),"i").
+
+}
+}
+
+}

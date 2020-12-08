@@ -1,0 +1,15 @@
+PREFIX plg: <http://purl.org/linguistics/gold/>
+SELECT DISTINCT ?type WHERE {
+   
+{dbr:Heineken dbp:style ?type}
+
+Union
+{
+  {{?type dct:subject dbc:Beer_styles.}
+UNION
+  {?type dct:subject dbc:Types_of_beer.}}
+  ?type rdfs:label ?label.
+  dbr:Heineken dbo:abstract ?desc.
+  filter regex(?desc,CONCAT("(", ?label, ")"),"i").
+}
+}

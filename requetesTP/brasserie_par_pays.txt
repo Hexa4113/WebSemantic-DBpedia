@@ -1,0 +1,21 @@
+PREFIX plg: <http://purl.org/linguistics/gold/>
+
+
+SELECT DISTINCT ?brasserie ?pays
+WHERE {
+  {?brasserie dbo:product dbr:Beer}
+  UNION
+  {?brasserie rdf:type dbo:Brewery}
+  UNION
+  {?brasserie plg:hypernym dbr:Brewery}
+  UNION 
+  {?brasserie dbo:industry dbr:Brewing}
+
+  {?brasserie dbp:locationCountry ?pays.}
+ UNION
+  {?brasserie dbp:location ?pays.}
+UNION
+  {?brasserie dbo:location ?pays. }
+
+FILTER (regex(?pays, "belgium", "i"))
+}
