@@ -23,7 +23,7 @@ Minus
 {?beer rdfs:label ?label.
 filter regex(?label, "(Beer in|Bierbrouwers|Smithwick's Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }
 
-dbr:Pilsner rdfs:label ?labelType.
+dbr:Pale_lager rdfs:label ?labelType.
 ?beer dbo:abstract ?desc.
 filter regex(?desc,CONCAT("(", ?labelType, ")"),"i").
 
