@@ -30,10 +30,6 @@ async function queryBeer() {
 
   await fetch(queryURL, {
     method: 'GET',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    },
-    mode: 'no-cors',
   })
     .then((response) => response.json())
     .then((data) => {
@@ -55,6 +51,8 @@ async function queryBeer() {
     });
   console.log(allBeers);
   setAutoComplete();
+  queryAllTypes();
+  queryBeersByType('Lager');
 }
 
 async function queryInfosOnBeer() {
@@ -261,14 +259,67 @@ async function queryBeersByType(type) {
       console.log('Data', data);
       let res = data.results.bindings;
       console.log(res);
-      let containerList = document.querySelector('#beersByType ul');
+      let containerList = document.querySelector('#beersByType');
       containerList.innerHTML = '';
       for (let i = 0; i < res.length; i++) {
         const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
-        let li = document.createElement('li');
-        li.innerHTML = aBeer.name;
-        containerList.appendChild(li);
+        let divBeerType = document.createElement('div');
+        divBeerType.className = 'beerType';
+        divBeerType.innerHTML = aBeer.name;
+        containerList.appendChild(divBeerType);
       }
+    });
+}
+
+async function queryBeerByCountry(country) {
+  var url = 'http://dbpedia.org/sparql';
+  var query = [
+    'PREFIX plg: <http://purl.org/linguistics/gold/>',
+    'SELECT DISTINCT ?beer WHERE {',
+
+    '{',
+    '{?beer dbp:type dbr:Beer.}',
+    'UNION',
+    '{?beer plg:hypernym dbr:Beer}',
+    'UNION',
+    '{?e skos:broader  dbc:Beer_by_country.',
+    '?beer dct:subject ?e .}}',
+
+    '{?beer dct:subject ?origin.',
+      'filter(regex(?origin,"' + country +'", "i") AND regex(?origin,"beer_in_","i"))}',
+
+    'Minus',
+    '{?beer dct:subject dbc:Beer_styles}',
+    'Minus',
+    '{?beer dct:subject dbc:Types_of_beer}',
+    'Minus',
+    '{?beer rdfs:label ?label.',
+    'filter regex(?label, "(Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
+    '}',
+
+    'ORDER BY ASC(?beer)',
+  ].join(' ');
+  console.log(query);
+
+  let queryURL = encodeURI(url + '?query=' + query + '&format=json');
+  queryURL = queryURL.replace(/#/g, '%23');
+  await fetch(queryURL, {
+    method: 'GET',
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Data', data);
+      let res = data.results.bindings;
+      console.log(res);
+      // let containerList = document.querySelector('#beersByType');
+      // containerList.innerHTML = '';
+      // for (let i = 0; i < res.length; i++) {
+      //   const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
+      //   let divBeerType = document.createElement('div');
+      //   divBeerType.className = 'beerType';
+      //   divBeerType.innerHTML = aBeer.name;
+      //   containerList.appendChild(divBeerType);
+      // }
     });
 }
 
