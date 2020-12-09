@@ -30,6 +30,10 @@ async function queryBeer() {
 
   await fetch(queryURL, {
     method: 'GET',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
+    mode: 'no-cors',
   })
     .then((response) => response.json())
     .then((data) => {
