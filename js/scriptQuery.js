@@ -1,4 +1,11 @@
 let allBeers = [];
+/*
+  {
+    id: exampleID,
+    name: exampleName,
+    link: exampleLink
+  }
+*/
 
 let allTypes = [];
 
@@ -55,10 +62,9 @@ async function queryBeer() {
   queryBeersByType('Lager');
 }
 
-async function queryInfosOnBeer() {
+async function queryInfosOnBeer(beerName) {
   let divInfos = document.getElementById('beerInfos');
-  var input = document.getElementById('searchBar');
-  let beer = allBeers.find((x) => x.name == input.value);
+  let beer = allBeers.find((x) => x.name == beerName);
   if (!beer) {
     document.querySelector('.notfoundbeer').style.display = 'block';
     console.log('Beer not found');
@@ -160,13 +166,29 @@ async function queryInfosOnBeer() {
           }
         }
         divInfos.innerHTML = '';
+        let h3 = document.createElement('h3')
+        h3.textContent = beer.name;
+        divInfos.appendChild(h3);
         divInfos.appendChild(desc);
         divInfos.appendChild(origin);
         divInfos.appendChild(abv);
         divInfos.appendChild(introduced);
         divInfos.appendChild(type);
 
-        divInfos.style.display = 'block';
+        //divInfos.style.display = 'block';
+        let modal = document.getElementById('modal-beer');
+        displayModal();
+        let btn = document.querySelector('#modal-beer button');
+        btn.addEventListener('click', (e) => {
+          closeModal();
+        });
+
+        window.addEventListener('click', (e) => {
+          if (e.target == modal) {
+            closeModal();
+          }
+        });
+        // divInfos.style.transform = 'translateX(50%)'
       });
   }
 }
@@ -266,6 +288,9 @@ async function queryBeersByType(type) {
         let divBeerType = document.createElement('div');
         divBeerType.className = 'beerType';
         divBeerType.innerHTML = aBeer.name;
+        divBeerType.addEventListener('click', (e) => {
+          queryInfosOnBeer(aBeer.name);
+        });
         containerList.appendChild(divBeerType);
       }
     });
@@ -286,7 +311,7 @@ async function queryBeerByCountry(country) {
     '?beer dct:subject ?e .}}',
 
     '{?beer dct:subject ?origin.',
-      'filter(regex(?origin,"' + country +'", "i") AND regex(?origin,"beer_in_","i"))}',
+    'filter(regex(?origin,"' + country + '", "i") AND regex(?origin,"beer_in_","i"))}',
 
     'Minus',
     '{?beer dct:subject dbc:Beer_styles}',
@@ -311,15 +336,15 @@ async function queryBeerByCountry(country) {
       console.log('Data', data);
       let res = data.results.bindings;
       console.log(res);
-      // let containerList = document.querySelector('#beersByType');
-      // containerList.innerHTML = '';
-      // for (let i = 0; i < res.length; i++) {
-      //   const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
-      //   let divBeerType = document.createElement('div');
-      //   divBeerType.className = 'beerType';
-      //   divBeerType.innerHTML = aBeer.name;
-      //   containerList.appendChild(divBeerType);
-      // }
+      let containerList = document.querySelector('#beerByCountry');
+      containerList.innerHTML = '';
+      for (let i = 0; i < res.length; i++) {
+        const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
+        let divBeerType = document.createElement('div');
+        divBeerType.className = 'beerType';
+        divBeerType.innerHTML = aBeer.name;
+        containerList.appendChild(divBeerType);
+      }
     });
 }
 
@@ -356,4 +381,14 @@ function capitalizeFirstLetter(str) {
 function closeList() {
   let searchRes = document.getElementById('searchResult');
   searchRes.innerHTML = '';
+}
+
+function displayModal() {
+  let modal = document.getElementById("modal-beer");
+  modal.style.left = '0%';
+}
+
+function closeModal() {
+  let modal = document.getElementById("modal-beer");
+  modal.style.left = '-100%';
 }

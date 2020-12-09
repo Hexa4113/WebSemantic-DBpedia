@@ -26,24 +26,39 @@
       <input id="searchBar" type="text" placeholder="Enter a beer ..." list="cityname" />
 
       <div id="searchResult"></div>
-      <button id="searchButton" class="btn" onclick="queryInfosOnBeer(); closeList()">Search Beer</button>
+      <button
+        id="searchButton"
+        class="btn"
+        onclick="queryInfosOnBeer(document.getElementById('searchBar').value); closeList()"
+      >
+        Search Beer
+      </button>
       <div class="notfoundbeer">Beer not found. Please try again.</div>
     </section>
 
-    <section id="beerInfos"></section>
-
     <section class="container-dark">
-      <div id="beerByCountry">
+      <div id="countries">
         <h3>Beer by country</h3>
         <ul>
           <li onclick="queryBeerByCountry('france')">France</li>
           <li onclick="queryBeerByCountry('belgium')">Belgium</li>
           <li onclick="queryBeerByCountry('germany')">Germany</li>
-          <li onclick="queryBeerByCountry('france')">UK</li>
+          <li onclick="queryBeerByCountry('united_kingdom')">UK</li>
           <li onclick="queryBeerByCountry('italy')">Italy</li>
         </ul>
       </div>
+
+      <div id="beerByCountry"></div>
     </section>
+
+    <div class="custom-shape-divider-bottom-1607529528">
+      <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path
+          d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+          class="shape-fill"
+        ></path>
+      </svg>
+    </div>
 
     <section class="container">
       <div id="typesOfBeer">
@@ -52,6 +67,11 @@
         <div id="beersByType"></div>
       </div>
     </section>
+
+    <div id="modal-beer">
+      <button class="btn">Close</button>
+      <div id="beerInfos"></div>
+    </div>
 
     <script src="js/scriptQuery.js"></script>
     <script>

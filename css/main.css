@@ -1,6 +1,8 @@
 :root {
   --error-color: #ff2e2e;
   --orange-color: #ffa42e;
+  --orange-glow-color: rgba(255, 164, 46, 0.4);
+  --dark-background: #1d1c27;
 }
 
 body {
@@ -20,7 +22,8 @@ button {
   cursor: pointer;
 }
 
-input, select {
+input,
+select {
   padding: 9px;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -77,6 +80,7 @@ h3 {
   margin: 20px auto 0 auto;
   justify-content: center;
   text-align: center;
+  position: relative;
 }
 
 #searchBar {
@@ -91,6 +95,7 @@ h3 {
   display: block;
   width: 300px;
   text-align: left;
+  z-index: 10;
 }
 
 #searchResult > div {
@@ -111,6 +116,11 @@ h3 {
   display: inline-block;
   text-align: center;
   margin: 0 auto 0 auto;
+  transition: all 0.2s;
+}
+
+#searchButton:hover {
+  box-shadow: 0 5px 15px rgba(255, 164, 46, 0.4);
 }
 
 .notfoundbeer {
@@ -131,60 +141,110 @@ h3 {
   border-radius: 5px;
 }
 
+#modal-beer {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0%;
+  left: -100%;
+  transition: all 1s ease-out;
+}
+
+#modal-beer button {
+  float: right;
+  color: white;
+  padding: 10px;
+  width: fit-content;
+  margin-right: 20px;
+  margin-top: 20px;
+  border: 2px solid var(--orange-color);
+  background-color: unset;
+  transition: background-color 0.2s;
+  outline: none;
+}
+
+#modal-beer button:hover {
+  background-color: var(--orange-color);
+}
+
 #beerInfos {
-  display: none;
+  display: block;
   background-color: #eee;
   border: 0;
   border-radius: 10px;
   width: 80%;
-  margin: 10px auto 10px auto;
   padding: 10px;
   box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
     0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
+  /* transform: translateX(-1000px); */
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  transition: all 1s ease-out;
 }
 
 #beerInfos > div {
   margin: 10px 0 10px 0;
 }
 
-#beerByCountry {
+#beerInfos > h3 {
+  text-align: center;
+}
+
+#countries {
   width: 80%;
   margin: 0 auto 0 auto;
 }
 
-#beerByCountry ul {
+#countries ul {
   list-style-type: none;
   margin-right: auto;
   margin-left: auto;
   text-align: center;
 }
 
-#beerByCountry li {
+#countries li {
   display: inline-block;
   margin: auto 10px auto 10px;
   padding: 10px;
   min-width: 100px;
-  border: 1px solid #ccc;
+  border: 0;
   border-radius: 5px;
-  background-color: white;
+  background-color: #302f3a;
   cursor: pointer;
+  color: white;
   transition-duration: 0.5s;
 }
 
-#beerByCountry li:hover {
+#countries li:hover {
   background-color: var(--orange-color);
   transition-duration: 0.5s;
+  box-shadow: 0 5px 15px var(--orange-glow-color);
+}
+
+#beerByCountry {
+  display: flex;
+}
+
+#beerByCountry {
+  display: flex;
 }
 
 .container-dark {
-  background-color: #eee;
+  background-color: var(--dark-background);
   padding: 10px 0 10px 0;
-  margin: 20px 0 20px 0;
+  margin: 20px 0 0 0;
+  color: white;
+  position: relative;
 }
 
 .container {
   padding: 10px 0 10px 0;
-  margin: 20px 0 20px 0;
+  margin: 0 0 20px 0;
+  position: relative;
 }
 
 #typesOfBeer {
@@ -213,4 +273,25 @@ h3 {
   text-align: center;
   cursor: pointer;
   flex-basis: 200px;
+}
+
+.custom-shape-divider-bottom-1607529528 {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  transform: rotate(0deg);
+}
+
+.custom-shape-divider-bottom-1607529528 svg {
+  position: relative;
+  display: block;
+  width: calc(160% + 1.3px);
+  height: 136px;
+}
+
+.custom-shape-divider-bottom-1607529528 .shape-fill {
+  fill: var(--dark-background);
 }
