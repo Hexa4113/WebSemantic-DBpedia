@@ -63,7 +63,13 @@ async function queryBeer() {
 }
 
 async function queryInfosOnBeer(beerName) {
-  let divInfos = document.getElementById('beerInfos');
+  let divInfos = document.querySelector('#beerInfos');
+  let divBeerName = document.querySelector('#beerInfos .beerName');
+  let tableInfos = document.getElementById('tableInfos');
+  let tableBody = tableInfos.children[0];
+  let title = document.querySelector('#beerInfos .infosTitles');
+  let contents = document.querySelector('#beerInfos .infosContents');
+
   let beer = allBeers.find((x) => x.name == beerName);
   if (!beer) {
     document.querySelector('.notfoundbeer').style.display = 'block';
@@ -129,51 +135,50 @@ async function queryInfosOnBeer(beerName) {
 
         let type = document.createElement('div');
 
-        desc.innerHTML = '<strong class="orange">Description</strong> : Not found';
-        origin.innerHTML = '<strong class="orange">Origin</strong> : Not found';
-        abv.innerHTML = '<strong class="orange">Alcool by volume</strong> : Not found';
-        introduced.innerHTML = '<strong class="orange">Date</strong> : Not found';
-        type.innerHTML = '<strong class="orange">Type</strong> : Not found';
+        desc.innerHTML = 'Not found';
+        origin.innerHTML = 'Not found';
+        abv.innerHTML = 'Not found';
+        introduced.innerHTML = 'Not found';
+        type.innerHTML = 'Not found';
 
         for (let i = 0; i < res.length; i++) {
           console.log(res[i]);
           if (res[i].comment && res[i].comment['xml:lang'] == 'en') {
-            desc.innerHTML = '<strong class="orange">Description</strong> : ' + res[i].comment.value;
+            desc.innerHTML = res[i].comment.value;
           } else if (res[i].origin) {
             let o = res[i].origin.value;
             let val = o.substring(o.lastIndexOf('/') + 1);
-            origin.innerHTML = '<strong class="orange">Origin</strong> : ' + val;
+            origin.innerHTML = val;
             originFound = true;
           } else if (res[i].origin2 && !originFound) {
             const regex = /^http:\/\/dbpedia\.org\/resource\/Category:Beer_in.+$/gm;
             if (res[i].origin2.value.match(regex)) {
               let val = res[i].origin2.value.substring(res[i].origin2.value.lastIndexOf('_') + 1);
-              origin.innerHTML = '<strong class="orange">Origin</strong> : ' + val;
+              origin.innerHTML = val;
             }
           } else if (res[i].abv) {
             let val = res[i].abv.value;
-            abv.innerHTML = '<strong class="orange">Alcool by volume</strong> : ' + val + ' %';
+            abv.innerHTML = val + ' %';
           } else if (res[i].introduced) {
             let val = res[i].introduced.value;
-            introduced.innerHTML = '<strong class="orange">Date</strong> : ' + val;
+            introduced.innerHTML = val;
             introducedFound = true;
           } else if (res[i].year && !introducedFound) {
             let val = res[i].year.value;
-            introduced.innerHTML = '<strong class="orange">Date</strong> : ' + val;
+            introduced.innerHTML = val;
           } else if (res[i].type) {
             let val = res[i].type.value.substring(res[i].type.value.lastIndexOf('/') + 1);
-            type.innerHTML = '<strong class="orange">Type</strong> : ' + val;
+            type.innerHTML = val;
           }
         }
-        divInfos.innerHTML = '';
-        let h3 = document.createElement('h3')
-        h3.textContent = beer.name;
-        divInfos.appendChild(h3);
-        divInfos.appendChild(desc);
-        divInfos.appendChild(origin);
-        divInfos.appendChild(abv);
-        divInfos.appendChild(introduced);
-        divInfos.appendChild(type);
+
+        tableBody.children[0].children[1].textContent = desc.innerHTML;
+        tableBody.children[1].children[1].textContent = origin.innerHTML;
+        tableBody.children[2].children[1].textContent = abv.innerHTML;
+        tableBody.children[3].children[1].textContent = type.innerHTML;
+        // divInfos.textContent = '';
+        divBeerName.textContent = '';
+        divBeerName.textContent = beer.name;
 
         //divInfos.style.display = 'block';
         let modal = document.getElementById('modal-beer');
@@ -384,11 +389,11 @@ function closeList() {
 }
 
 function displayModal() {
-  let modal = document.getElementById("modal-beer");
+  let modal = document.getElementById('modal-beer');
   modal.style.left = '0%';
 }
 
 function closeModal() {
-  let modal = document.getElementById("modal-beer");
+  let modal = document.getElementById('modal-beer');
   modal.style.left = '-100%';
 }

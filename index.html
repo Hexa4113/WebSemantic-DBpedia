@@ -25,7 +25,9 @@
       <h3>Find your beer</h3>
       <input id="searchBar" type="text" placeholder="Enter a beer ..." list="cityname" />
 
+      <!-- Dropdown menu -->
       <div id="searchResult"></div>
+
       <button
         id="searchButton"
         class="btn"
@@ -51,6 +53,7 @@
       <div id="beerByCountry"></div>
     </section>
 
+    <!-- Wavy separator -->
     <div class="custom-shape-divider-bottom-1607529528">
       <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
         <path
@@ -68,9 +71,31 @@
       </div>
     </section>
 
+    <!-- Modal for beer infos -->
     <div id="modal-beer">
       <button class="btn">Close</button>
-      <div id="beerInfos"></div>
+      <div id="beerInfos">
+        <h3 class="beerName"></h3>
+
+        <table id="tableInfos">
+          <tr>
+            <td><strong class="orange">Description</strong></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong class="orange">Origin</strong></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong class="orange">Alcool by volume</strong></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td><strong class="orange">Type</strong></td>
+            <td></td>
+          </tr>
+        </table>
+      </div>
     </div>
 
     <script src="js/scriptQuery.js"></script>

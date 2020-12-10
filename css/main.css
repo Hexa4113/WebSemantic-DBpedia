@@ -77,7 +77,7 @@ h3 {
 
 #search {
   width: fit-content;
-  margin: 20px auto 0 auto;
+  margin: 40px auto 40px auto;
   justify-content: center;
   text-align: center;
   position: relative;
@@ -149,7 +149,7 @@ h3 {
   position: fixed;
   top: 0%;
   left: -100%;
-  transition: all 1s ease-out;
+  transition: all 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 
 #modal-beer button {
@@ -174,8 +174,8 @@ h3 {
   background-color: #eee;
   border: 0;
   border-radius: 10px;
+  padding-bottom: 10px;
   width: 80%;
-  padding: 10px;
   box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
     0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
   /* transform: translateX(-1000px); */
@@ -190,9 +190,21 @@ h3 {
   margin: 10px 0 10px 0;
 }
 
-#beerInfos > h3 {
+#beerInfos h3 {
   text-align: center;
 }
+
+#tableInfos {
+  font-size: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#tableInfos td {
+  padding: 20px;
+}
+
+#tableInfos tr:nth-child(even) {background-color: rgb(231, 231, 231);}
 
 #countries {
   width: 80%;
@@ -227,10 +239,10 @@ h3 {
 
 #beerByCountry {
   display: flex;
-}
-
-#beerByCountry {
-  display: flex;
+  flex-wrap: wrap;
+  width: 80%;
+  margin: 0 auto;
+  justify-content: flex-start;
 }
 
 .container-dark {
@@ -250,10 +262,12 @@ h3 {
 #typesOfBeer {
   width: 80%;
   margin: 0 auto 0 auto;
+  min-height: 400px;
 }
 
 #typesOfBeer h3 {
   text-align: right;
+  margin-top: 0;
 }
 
 #beersByType {
@@ -272,7 +286,7 @@ h3 {
   border-radius: 5px;
   text-align: center;
   cursor: pointer;
-  flex-basis: 200px;
+  flex-basis: 20%;
 }
 
 .custom-shape-divider-bottom-1607529528 {
