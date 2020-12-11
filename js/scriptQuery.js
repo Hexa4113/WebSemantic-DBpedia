@@ -370,6 +370,7 @@ async function queryBeersByType(type) {
 async function queryBeerByCountry(country) {
   var countryNameContainer = document.getElementById("countryName");
   var countryPrettier = country[0].toUpperCase() + country.substring(1);
+  countryPrettier = countryPrettier.replace("_", " ");
   countryNameContainer.innerHTML= countryPrettier;
   var url = 'http://dbpedia.org/sparql';
   var query = [

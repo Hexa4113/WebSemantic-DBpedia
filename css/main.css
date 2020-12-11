@@ -226,7 +226,7 @@ h3 {
 
 #countries li {
   display: inline-block;
-  margin: auto 10px auto 10px;
+  margin: 7px 10px;
   padding: 10px;
   min-width: 100px;
   border: 0;
