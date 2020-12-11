@@ -82,7 +82,7 @@ async function queryInfosOnBeer(beerName) {
       'PREFIX dbr: <http://dbpedia.org/resource/>',
       'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>',
       'PREFIX dbpedia: <http://dbpedia.org/>',
-      'SELECT ?comment ?label ?origin ?origin2 ?abv ?introduced ?year ?type',
+      'SELECT ?comment ?label ?origin ?origin2 ?abv ?introduced ?year ?type ?brewery',
       'WHERE {',
       '{ <http://dbpedia.org/resource/' + beer.id + '> rdfs:comment ?comment }',
       'UNION',
@@ -99,12 +99,15 @@ async function queryInfosOnBeer(beerName) {
       '{ <http://dbpedia.org/resource/' + beer.id + '> <http://dbpedia.org/property/year> ?year }',
       'UNION',
       '{<http://dbpedia.org/resource/' + beer.id + '> dbp:style ?type}',
+      'UNION',
+      '{<http://dbpedia.org/resource/' + beer.id + '> dbo:manufacturer ?brewery}',
 
       'UNION',
       '{',
       '{{?type dct:subject dbc:Beer_styles.}',
       'UNION',
       '{?type dct:subject dbc:Types_of_beer.}}',
+      
       '?type rdfs:label ?label.',
       '<http://dbpedia.org/resource/' + beer.id + '> dbo:abstract ?desc.',
       'filter regex(?desc,CONCAT("(", ?label, ")"),"i").',
@@ -135,11 +138,14 @@ async function queryInfosOnBeer(beerName) {
 
         let type = document.createElement('div');
 
+        let brewery = document.createElement('div');
+
         desc.innerHTML = 'Not found';
         origin.innerHTML = 'Not found';
         abv.innerHTML = 'Not found';
         introduced.innerHTML = 'Not found';
         type.innerHTML = 'Not found';
+        brewery.innerHTML = 'Not found';
 
         for (let i = 0; i < res.length; i++) {
           console.log(res[i]);
@@ -169,6 +175,9 @@ async function queryInfosOnBeer(beerName) {
           } else if (res[i].type) {
             let val = res[i].type.value.substring(res[i].type.value.lastIndexOf('/') + 1);
             type.innerHTML = val;
+          } else if (res[i].brewery) {
+            let val = res[i].brewery.value.substring(res[i].brewery.value.lastIndexOf('/') + 1);
+            brewery.innerHTML = "<a href='#brewery' onclick=\"highlightBreweryBeers('"+val+"')\"> "+val+"</a>";
           }
         }
 
@@ -176,6 +185,7 @@ async function queryInfosOnBeer(beerName) {
         tableBody.children[1].children[1].innerHTML = origin.innerHTML;
         tableBody.children[2].children[1].textContent = abv.innerHTML;
         tableBody.children[3].children[1].textContent = type.innerHTML;
+        tableBody.children[4].children[1].innerHTML = brewery.innerHTML;
         // divInfos.textContent = '';
         divBeerName.textContent = '';
         divBeerName.textContent = beer.name;
@@ -357,6 +367,72 @@ async function queryBeerByCountry(country) {
     });
 }
 
+async function queryBeerByBrewery(brewery){
+  var breweryNameContainer = document.getElementById("breweryName");
+  var breweryPrettier = brewery[0].toUpperCase() + brewery.substring(1);
+  breweryNameContainer.innerHTML= breweryPrettier;
+
+  var url = 'http://dbpedia.org/sparql';
+  var query = [
+    'PREFIX plg: <http://purl.org/linguistics/gold/>',
+    'SELECT DISTINCT ?beer WHERE {',
+    '{',
+    '{?beer dbo:manufacturer <http://dbpedia.org/resource/' + brewery + '>}',
+    'Union',
+    '{?beer dbp:brewery <http://dbpedia.org/resource/' + brewery + '>}',
+    'Union',
+    '{ ',
+        '{{?beer dbp:type dbr:Beer.}',
+        'UNION',
+        '{?beer plg:hypernym dbr:Beer}',
+        'UNION',
+        '{?e skos:broader  dbc:Beer_by_country.',
+        '?beer dct:subject ?e .}}',
+    '?beer dbo:abstract ?description.',
+    '<http://dbpedia.org/resource/' + brewery + '> rdfs:label ?label.',
+    'filter regex(?description,CONCAT("(", ?label, ")"),"i").',
+    '}',
+    '}',
+    'Minus',
+    '{?beer dct:subject dbc:Beer_styles}',
+    'Minus',
+    '{?beer dct:subject dbc:Types_of_beer}',
+    'Minus',
+    '{?beer rdfs:label ?labeldeux.',
+    'filter regex(?labeldeux, "(Beer in|Industrie|Grupo|trademark|Compa|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)").',
+    '}',
+    'Minus',
+    '{?beer dbo:type dbr:Public_company}',
+    'Minus',
+    '{?beer plg:hypernym dbr:Company}',
+    '}',
+    'ORDER BY ASC(?beer)',
+  ].join(' ');
+  console.log(query);
+
+  let queryURL = encodeURI(url + '?query=' + query + '&format=json');
+  queryURL = queryURL.replace(/#/g, '%23');
+  await fetch(queryURL, {
+    method: 'GET',
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Data', data);
+      let res = data.results.bindings;
+      console.log(res);
+      let containerList = document.querySelector('#beersByBrewery');
+      containerList.innerHTML = '';
+      
+      for (let i = 0; i < res.length; i++) {
+        const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
+        let divBeerType = document.createElement('div');
+        divBeerType.className = 'beerType';
+        divBeerType.innerHTML = aBeer.name;
+        containerList.appendChild(divBeerType);
+      }
+    });
+}
+
 function setAutoComplete() {
   let input = document.getElementById('searchBar');
   input.addEventListener('input', (e) => {
@@ -406,4 +482,9 @@ function highlightCountry(countryName){
   var country_name = countryName.toLowerCase();
   closeModal();
   queryBeerByCountry(country_name);
+}
+
+function highlightBreweryBeers(brewery){
+  closeModal();
+  queryBeerByBrewery(brewery);
 }

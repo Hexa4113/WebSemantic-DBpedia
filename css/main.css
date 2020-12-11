@@ -206,10 +206,16 @@ h3 {
 
 #tableInfos tr:nth-child(even) {background-color: rgb(231, 231, 231);}
 
-#countries {
+#countries{
   width: 80%;
   margin: 0 auto 0 auto;
 }
+
+#brewery{
+  width: 80%;
+  margin: 0 auto 0 auto;
+}
+
 
 #countries ul {
   list-style-type: none;
