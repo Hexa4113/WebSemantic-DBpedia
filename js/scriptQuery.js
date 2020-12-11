@@ -1,11 +1,17 @@
 let allBeers = [];
+/*
+  {
+    id: exampleID,
+    name: exampleName,
+    link: exampleLink
+  }
+*/
 
 let allTypes = [];
 
 async function queryBeer() {
   let url = 'http://dbpedia.org/sparql';
   let query = [
-    'PREFIX dbpedia2: <http://dbpedia.org/resource/> PREFIX dbpedia2: <http://dbpedia.org/property/>',
     'PREFIX plg: <http://purl.org/linguistics/gold/>',
     'SELECT DISTINCT ?beer WHERE {',
 
@@ -18,11 +24,14 @@ async function queryBeer() {
     '?beer dct:subject ?e .}}',
 
     'Minus',
-    '{?beer dbo:product dbr:Beer}',
+    '{?beer dct:subject dbc:Beer_styles}',
+    'Minus',
+    '{?beer dct:subject dbc:Types_of_beer}',
     'Minus',
     '{?beer rdfs:label ?label.',
-    'filter regex(?label, "(Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
+    'filter regex(?label, "(Group|Anheuser-Busch InBev|Isle of Man Pure Beer Act|Group|Corporation|Compa|GABS Hottest 100 Aussie Craft Beers of the Year|trademark|Association|Holding|Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)","i").}',
     '}',
+
     'ORDER BY ASC(?beer)',
   ].join(' ');
 
@@ -51,12 +60,20 @@ async function queryBeer() {
     });
   console.log(allBeers);
   setAutoComplete();
+  queryAllTypes();
+  queryBeersByType('Lager');
+  window.location.href = 'http://localhost:5500/#typeOfBeerContainer';
 }
 
-async function queryInfosOnBeer() {
-  let divInfos = document.getElementById('beerInfos');
-  var input = document.getElementById('searchBar');
-  let beer = allBeers.find((x) => x.name == input.value);
+async function queryInfosOnBeer(beerName) {
+  let divInfos = document.querySelector('#beerInfos');
+  let divBeerName = document.querySelector('#beerInfos .beerName');
+  let tableInfos = document.getElementById('tableInfos');
+  let tableBody = tableInfos.children[0];
+  let title = document.querySelector('#beerInfos .infosTitles');
+  let contents = document.querySelector('#beerInfos .infosContents');
+
+  let beer = allBeers.find((x) => x.name == beerName);
   if (!beer) {
     document.querySelector('.notfoundbeer').style.display = 'block';
     console.log('Beer not found');
@@ -120,51 +137,91 @@ async function queryInfosOnBeer() {
         let introducedFound = false;
 
         let type = document.createElement('div');
+        let tabType = [];
 
-        desc.innerHTML = '<strong class="orange">Description</strong> : Not found';
-        origin.innerHTML = '<strong class="orange">Origin</strong> : Not found';
-        abv.innerHTML = '<strong class="orange">Alcool by volume</strong> : Not found';
-        introduced.innerHTML = '<strong class="orange">Date</strong> : Not found';
-        type.innerHTML = '<strong class="orange">Type</strong> : Not found';
+        desc.innerHTML = 'Not found';
+        origin.innerHTML = 'Not found';
+        abv.innerHTML = 'Not found';
+        introduced.innerHTML = 'Not found';
+        type.innerHTML = 'Not found';
 
         for (let i = 0; i < res.length; i++) {
           console.log(res[i]);
           if (res[i].comment && res[i].comment['xml:lang'] == 'en') {
-            desc.innerHTML = '<strong class="orange">Description</strong> : ' + res[i].comment.value;
+            desc.innerHTML = res[i].comment.value;
           } else if (res[i].origin) {
             let o = res[i].origin.value;
             let val = o.substring(o.lastIndexOf('/') + 1);
-            origin.innerHTML = '<strong class="orange">Origin</strong> : ' + val;
+            origin.innerHTML = "<a href='#countries' onclick=\"highlightCountry('"+val+"')\"> "+val+"</a>";
             originFound = true;
           } else if (res[i].origin2 && !originFound) {
             const regex = /^http:\/\/dbpedia\.org\/resource\/Category:Beer_in.+$/gm;
             if (res[i].origin2.value.match(regex)) {
               let val = res[i].origin2.value.substring(res[i].origin2.value.lastIndexOf('_') + 1);
-              origin.innerHTML = '<strong class="orange">Origin</strong> : ' + val;
+              origin.innerHTML = "<a href='#countries' onclick=\"highlightCountry('"+val+"')\"> "+val+"</a>";
             }
           } else if (res[i].abv) {
             let val = res[i].abv.value;
-            abv.innerHTML = '<strong class="orange">Alcool by volume</strong> : ' + val + ' %';
+            abv.innerHTML = val + ' %';
           } else if (res[i].introduced) {
             let val = res[i].introduced.value;
-            introduced.innerHTML = '<strong class="orange">Date</strong> : ' + val;
+            introduced.innerHTML = val;
             introducedFound = true;
           } else if (res[i].year && !introducedFound) {
             let val = res[i].year.value;
-            introduced.innerHTML = '<strong class="orange">Date</strong> : ' + val;
+            introduced.innerHTML = val;
           } else if (res[i].type) {
             let val = res[i].type.value.substring(res[i].type.value.lastIndexOf('/') + 1);
-            type.innerHTML = '<strong class="orange">Type</strong> : ' + val;
+
+            if (!tabType.includes(val)) {
+              tabType.push(val);
+            }
+          }
+
+          //type.innerHTML = tabType.join(', ');
+        }
+        if (tabType.length > 0) {
+          type.innerHTML = '';
+          for (let i in tabType) {
+            let a = document.createElement('div');
+            console.log(a);
+            a.innerHTML = tabType[i];
+
+            type.appendChild(a);
+            // type.innerHTML += a.innerHTML;
+            a.addEventListener('click', () => {
+              console.log('click type');
+              closeModal();
+              window.location.href = 'http://localhost:5500#typeOfBeers';
+              queryBeersByType(tabType[i]);
+              document.getElementById('selectTypeOfBeer').value = tabType[i];
+            });
           }
         }
-        divInfos.innerHTML = '';
-        divInfos.appendChild(desc);
-        divInfos.appendChild(origin);
-        divInfos.appendChild(abv);
-        divInfos.appendChild(introduced);
-        divInfos.appendChild(type);
 
-        divInfos.style.display = 'block';
+        tableBody.children[0].children[1].textContent = desc.innerHTML;
+        tableBody.children[1].children[1].innerHTML = origin.innerHTML;
+        tableBody.children[2].children[1].textContent = abv.innerHTML;
+        tableBody.children[3].children[1].replaceWith(type);
+
+        // divInfos.textContent = '';
+        divBeerName.textContent = '';
+        divBeerName.textContent = beer.name;
+
+        //divInfos.style.display = 'block';
+        let modal = document.getElementById('modal-beer');
+        displayModal();
+        let btn = document.querySelector('#modal-beer button');
+        btn.addEventListener('click', (e) => {
+          closeModal();
+        });
+
+        window.addEventListener('click', (e) => {
+          if (e.target == modal) {
+            closeModal();
+          }
+        });
+        // divInfos.style.transform = 'translateX(50%)'
       });
   }
 }
@@ -235,7 +292,7 @@ async function queryBeersByType(type) {
     '{?beer dct:subject dbc:Types_of_beer}',
     'Minus',
     '{?beer rdfs:label ?label.',
-    'filter regex(?label, "(Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
+    'filter regex(?label, "(Group|Anheuser-Busch InBev|Isle of Man Pure Beer Act|Group|Corporation|Compa|GABS Hottest 100 Aussie Craft Beers of the Year|trademark|Association|Holding|Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)","i").}',
 
     '<http://dbpedia.org/resource/' + type + '> rdfs:label ?labelType.',
     '?beer dbo:abstract ?desc.',
@@ -257,13 +314,73 @@ async function queryBeersByType(type) {
       console.log('Data', data);
       let res = data.results.bindings;
       console.log(res);
-      let containerList = document.querySelector('#beersByType ul');
+      let containerList = document.querySelector('#beersByType');
       containerList.innerHTML = '';
       for (let i = 0; i < res.length; i++) {
         const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
-        let li = document.createElement('li');
-        li.innerHTML = aBeer.name;
-        containerList.appendChild(li);
+        let divBeerType = document.createElement('div');
+        divBeerType.className = 'beerType';
+        divBeerType.innerHTML = aBeer.name;
+        divBeerType.addEventListener('click', (e) => {
+          queryInfosOnBeer(aBeer.name);
+        });
+        containerList.appendChild(divBeerType);
+      }
+    });
+}
+
+async function queryBeerByCountry(country) {
+  var countryNameContainer = document.getElementById("countryName");
+  var countryPrettier = country[0].toUpperCase() + country.substring(1);
+  countryNameContainer.innerHTML= countryPrettier;
+  var url = 'http://dbpedia.org/sparql';
+  var query = [
+    'PREFIX plg: <http://purl.org/linguistics/gold/>',
+    'SELECT DISTINCT ?beer WHERE {',
+
+    '{',
+    '{?beer dbp:type dbr:Beer.}',
+    'UNION',
+    '{?beer plg:hypernym dbr:Beer}',
+    'UNION',
+    '{?e skos:broader  dbc:Beer_by_country.',
+    '?beer dct:subject ?e .}}',
+
+    '{?beer dct:subject ?origin.',
+    'filter(regex(?origin,"' + country + '", "i") AND regex(?origin,"beer_in_","i"))}',
+
+    'Minus',
+    '{?beer dct:subject dbc:Beer_styles}',
+    'Minus',
+    '{?beer dct:subject dbc:Types_of_beer}',
+    'Minus',
+    '{?beer rdfs:label ?label.',
+    'filter regex(?label, "(Group|Anheuser-Busch InBev|Isle of Man Pure Beer Act|Group|Corporation|Compa|GABS Hottest 100 Aussie Craft Beers of the Year|trademark|Association|Holding|Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)","i").}',
+    '}',
+
+    'ORDER BY ASC(?beer)',
+  ].join(' ');
+  console.log(query);
+
+  let queryURL = encodeURI(url + '?query=' + query + '&format=json');
+  queryURL = queryURL.replace(/#/g, '%23');
+  await fetch(queryURL, {
+    method: 'GET',
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('Data', data);
+      let res = data.results.bindings;
+      console.log(res);
+      let containerList = document.querySelector('#beerByCountry');
+      containerList.innerHTML = '';
+      
+      for (let i = 0; i < res.length; i++) {
+        const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
+        let divBeerType = document.createElement('div');
+        divBeerType.className = 'beerType';
+        divBeerType.innerHTML = aBeer.name;
+        containerList.appendChild(divBeerType);
       }
     });
 }
@@ -301,4 +418,20 @@ function capitalizeFirstLetter(str) {
 function closeList() {
   let searchRes = document.getElementById('searchResult');
   searchRes.innerHTML = '';
+}
+
+function displayModal() {
+  let modal = document.getElementById('modal-beer');
+  modal.style.left = '0%';
+}
+
+function closeModal() {
+  let modal = document.getElementById('modal-beer');
+  modal.style.left = '-100%';
+}
+
+function highlightCountry(countryName){
+  var country_name = countryName.toLowerCase();
+  closeModal();
+  queryBeerByCountry(country_name);
 }
