@@ -1,0 +1,16 @@
+PREFIX plg: <http://purl.org/linguistics/gold/>
+SELECT DISTINCT ?desc WHERE {
+   
+{
+
+?type rdfs:label ?label.
+filter(regex(?label,"Tripel", "i"))
+
+  {{?type dct:subject dbc:Beer_styles.}
+UNION
+  {?type dct:subject dbc:Types_of_beer.}}
+
+?type dbo:abstract ?desc.
+}
+}
+ORDER BY ASC(?type)

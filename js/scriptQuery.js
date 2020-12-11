@@ -12,7 +12,6 @@ let allTypes = [];
 async function queryBeer() {
   let url = 'http://dbpedia.org/sparql';
   let query = [
-    'PREFIX dbpedia2: <http://dbpedia.org/resource/> PREFIX dbpedia2: <http://dbpedia.org/property/>',
     'PREFIX plg: <http://purl.org/linguistics/gold/>',
     'SELECT DISTINCT ?beer WHERE {',
 
@@ -25,11 +24,14 @@ async function queryBeer() {
     '?beer dct:subject ?e .}}',
 
     'Minus',
-    '{?beer dbo:product dbr:Beer}',
+    '{?beer dct:subject dbc:Beer_styles}',
+    'Minus',
+    '{?beer dct:subject dbc:Types_of_beer}',
     'Minus',
     '{?beer rdfs:label ?label.',
-    'filter regex(?label, "(Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
+    'filter regex(?label, "(Group|Anheuser-Busch InBev|Isle of Man Pure Beer Act|Group|Corporation|Compa|GABS Hottest 100 Aussie Craft Beers of the Year|trademark|Association|Holding|Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)","i").}',
     '}',
+
     'ORDER BY ASC(?beer)',
   ].join(' ');
 
@@ -60,6 +62,7 @@ async function queryBeer() {
   setAutoComplete();
   queryAllTypes();
   queryBeersByType('Lager');
+  window.location.href = 'http://localhost:5500/#typeOfBeerContainer';
 }
 
 async function queryInfosOnBeer(beerName) {
@@ -137,6 +140,7 @@ async function queryInfosOnBeer(beerName) {
         let introducedFound = false;
 
         let type = document.createElement('div');
+        let tabType = [];
 
         let brewery = document.createElement('div');
 
@@ -174,17 +178,40 @@ async function queryInfosOnBeer(beerName) {
             introduced.innerHTML = val;
           } else if (res[i].type) {
             let val = res[i].type.value.substring(res[i].type.value.lastIndexOf('/') + 1);
-            type.innerHTML = val;
+
+            if (!tabType.includes(val)) {
+              tabType.push(val);
+            }
           } else if (res[i].brewery) {
             let val = res[i].brewery.value.substring(res[i].brewery.value.lastIndexOf('/') + 1);
             brewery.innerHTML = "<a href='#brewery' onclick=\"highlightBreweryBeers('"+val+"')\"> "+val+"</a>";
+          }
+
+          //type.innerHTML = tabType.join(', ');
+        }
+        if (tabType.length > 0) {
+          type.innerHTML = '';
+          for (let i in tabType) {
+            let a = document.createElement('div');
+            console.log(a);
+            a.innerHTML = tabType[i];
+
+            type.appendChild(a);
+            // type.innerHTML += a.innerHTML;
+            a.addEventListener('click', () => {
+              console.log('click type');
+              closeModal();
+              window.location.href = 'http://localhost:5500#typeOfBeers';
+              queryBeersByType(tabType[i]);
+              document.getElementById('selectTypeOfBeer').value = tabType[i];
+            });
           }
         }
 
         tableBody.children[0].children[1].textContent = desc.innerHTML;
         tableBody.children[1].children[1].innerHTML = origin.innerHTML;
         tableBody.children[2].children[1].textContent = abv.innerHTML;
-        tableBody.children[3].children[1].textContent = type.innerHTML;
+        tableBody.children[3].children[1].replaceWith(type);
         tableBody.children[4].children[1].innerHTML = brewery.innerHTML;
         // divInfos.textContent = '';
         divBeerName.textContent = '';
@@ -274,7 +301,7 @@ async function queryBeersByType(type) {
     '{?beer dct:subject dbc:Types_of_beer}',
     'Minus',
     '{?beer rdfs:label ?label.',
-    'filter regex(?label, "(Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
+    'filter regex(?label, "(Group|Anheuser-Busch InBev|Isle of Man Pure Beer Act|Group|Corporation|Compa|GABS Hottest 100 Aussie Craft Beers of the Year|trademark|Association|Holding|Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)","i").}',
 
     '<http://dbpedia.org/resource/' + type + '> rdfs:label ?labelType.',
     '?beer dbo:abstract ?desc.',
@@ -337,7 +364,7 @@ async function queryBeerByCountry(country) {
     '{?beer dct:subject dbc:Types_of_beer}',
     'Minus',
     '{?beer rdfs:label ?label.',
-    'filter regex(?label, "(Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
+    'filter regex(?label, "(Group|Anheuser-Busch InBev|Isle of Man Pure Beer Act|Group|Corporation|Compa|GABS Hottest 100 Aussie Craft Beers of the Year|trademark|Association|Holding|Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)","i").}',
     '}',
 
     'ORDER BY ASC(?beer)',
