@@ -214,16 +214,8 @@ async function queryInfosOnBeer(beerName) {
           for (let i in tabType) {
             let a = document.createElement('div');
             console.log(a);
-            a.innerHTML = "<a href='#typeOfBeers'> "+tabType[i]+"</a>";
-
+            a.innerHTML = "<a href='#typesOfBeer' onclick=\"highlightTypeBeers('"+tabType[i]+"')\"> "+tabType[i]+"</a>";
             type.appendChild(a);
-            // type.innerHTML += a.innerHTML;
-            a.addEventListener('click', () => {
-              console.log('click type');
-              closeModal();
-              queryBeersByType(tabType[i]);
-              document.getElementById('selectTypeOfBeer').value = tabType[i];
-            });
           }
         }
 
@@ -430,6 +422,7 @@ async function queryBeerByCountry(country) {
 async function queryBeerByBrewery(brewery){
   var breweryNameContainer = document.getElementById("breweryName");
   var breweryPrettier = brewery[0].toUpperCase() + brewery.substring(1);
+  breweryPrettier = breweryPrettier.replace("_", " ");
   breweryNameContainer.innerHTML= breweryPrettier;
 
   var url = 'http://dbpedia.org/sparql';
@@ -550,4 +543,10 @@ function highlightCountry(countryName){
 function highlightBreweryBeers(brewery){
   closeModal();
   queryBeerByBrewery(brewery);
+}
+
+function highlightTypeBeers(type){
+  closeModal();
+  queryBeersByType(type);
+  document.getElementById('selectTypeOfBeer').value = type;
 }
