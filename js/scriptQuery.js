@@ -152,13 +152,13 @@ async function queryInfosOnBeer(beerName) {
           } else if (res[i].origin) {
             let o = res[i].origin.value;
             let val = o.substring(o.lastIndexOf('/') + 1);
-            origin.innerHTML = val;
+            origin.innerHTML = "<a href='#countries' onclick=\"highlightCountry('"+val+"')\"> "+val+"</a>";
             originFound = true;
           } else if (res[i].origin2 && !originFound) {
             const regex = /^http:\/\/dbpedia\.org\/resource\/Category:Beer_in.+$/gm;
             if (res[i].origin2.value.match(regex)) {
               let val = res[i].origin2.value.substring(res[i].origin2.value.lastIndexOf('_') + 1);
-              origin.innerHTML = val;
+              origin.innerHTML = "<a href='#countries' onclick=\"highlightCountry('"+val+"')\"> "+val+"</a>";
             }
           } else if (res[i].abv) {
             let val = res[i].abv.value;
@@ -200,7 +200,7 @@ async function queryInfosOnBeer(beerName) {
         }
 
         tableBody.children[0].children[1].textContent = desc.innerHTML;
-        tableBody.children[1].children[1].textContent = origin.innerHTML;
+        tableBody.children[1].children[1].innerHTML = origin.innerHTML;
         tableBody.children[2].children[1].textContent = abv.innerHTML;
         tableBody.children[3].children[1].replaceWith(type);
 
@@ -330,6 +330,9 @@ async function queryBeersByType(type) {
 }
 
 async function queryBeerByCountry(country) {
+  var countryNameContainer = document.getElementById("countryName");
+  var countryPrettier = country[0].toUpperCase() + country.substring(1);
+  countryNameContainer.innerHTML= countryPrettier;
   var url = 'http://dbpedia.org/sparql';
   var query = [
     'PREFIX plg: <http://purl.org/linguistics/gold/>',
@@ -371,6 +374,7 @@ async function queryBeerByCountry(country) {
       console.log(res);
       let containerList = document.querySelector('#beerByCountry');
       containerList.innerHTML = '';
+      
       for (let i = 0; i < res.length; i++) {
         const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
         let divBeerType = document.createElement('div');
@@ -424,4 +428,10 @@ function displayModal() {
 function closeModal() {
   let modal = document.getElementById('modal-beer');
   modal.style.left = '-100%';
+}
+
+function highlightCountry(countryName){
+  var country_name = countryName.toLowerCase();
+  closeModal();
+  queryBeerByCountry(country_name);
 }
