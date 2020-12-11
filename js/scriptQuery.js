@@ -62,7 +62,6 @@ async function queryBeer() {
   setAutoComplete();
   queryAllTypes();
   queryBeersByType('Lager');
-  window.location.href = 'http://localhost:5500/#typeOfBeerContainer';
 }
 
 async function queryInfosOnBeer(beerName) {
@@ -194,14 +193,13 @@ async function queryInfosOnBeer(beerName) {
           for (let i in tabType) {
             let a = document.createElement('div');
             console.log(a);
-            a.innerHTML = tabType[i];
+            a.innerHTML = "<a href='#typeOfBeers'> "+tabType[i]+"</a>";
 
             type.appendChild(a);
             // type.innerHTML += a.innerHTML;
             a.addEventListener('click', () => {
               console.log('click type');
               closeModal();
-              window.location.href = 'http://localhost:5500#typeOfBeers';
               queryBeersByType(tabType[i]);
               document.getElementById('selectTypeOfBeer').value = tabType[i];
             });
@@ -389,6 +387,9 @@ async function queryBeerByCountry(country) {
         let divBeerType = document.createElement('div');
         divBeerType.className = 'beerType';
         divBeerType.innerHTML = aBeer.name;
+        divBeerType.addEventListener('click', (e) => {
+          queryInfosOnBeer(aBeer.name);
+        });
         containerList.appendChild(divBeerType);
       }
     });
@@ -455,6 +456,9 @@ async function queryBeerByBrewery(brewery){
         let divBeerType = document.createElement('div');
         divBeerType.className = 'beerType';
         divBeerType.innerHTML = aBeer.name;
+        divBeerType.addEventListener('click', (e) => {
+          queryInfosOnBeer(aBeer.name);
+        });
         containerList.appendChild(divBeerType);
       }
     });
