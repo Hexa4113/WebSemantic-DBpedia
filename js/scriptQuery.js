@@ -60,8 +60,8 @@ async function queryBeer() {
     });
   console.log(allBeers);
   setAutoComplete();
-  queryAllTypes();
-  queryBeersByType('Lager');
+  await queryAllTypes();
+  await queryBeersByType('Lager');
 }
 
 async function queryInfosOnBeer(beerName) {

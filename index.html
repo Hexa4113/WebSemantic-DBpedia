@@ -9,6 +9,12 @@
   </head>
 
   <body>
+
+    <div id="loader">
+      <div class="spinner">Loading...</div>
+    </div>
+
+
     <section id="banner">
       <h1>Breuv'IF</h1>
       <div>"Le rire est à l'homme ce que la bière est à la pression"</div>
@@ -20,13 +26,7 @@
       <!-- Dropdown menu -->
       <div id="searchResult"></div>
 
-      <button
-        id="searchButton"
-        class="btn"
-        onclick="queryInfosOnBeer(document.getElementById('searchBar').value); closeList()"
-      >
-        Search Beer
-      </button>
+      <button id="searchButton" class="btn" onclick="queryInfosOnBeer(document.getElementById('searchBar').value); closeList()">Search Beer</button>
       <div class="notfoundbeer">Beer not found. Please try again.</div>
     </section>
 
@@ -48,9 +48,7 @@
         </ul>
         <h3 id="countryName"></h3>
       </div>
-      <div id="beerByCountry">
-        
-      </div>
+      <div id="beerByCountry"></div>
     </section>
 
     <!-- Wavy separator -->
@@ -70,6 +68,8 @@
         <div id="beersByType"></div>
       </div>
     </section>
+
+    <section class="container-parallax"></section>
 
     <section class="container-dark">
       <div id="brewery">
@@ -124,6 +124,7 @@
     <script>
       window.onload = function () {
         queryBeer();
+        document.getElementById('loader').style.opacity = '0%';
       };
     </script>
   </body>
