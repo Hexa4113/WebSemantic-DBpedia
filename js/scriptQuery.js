@@ -62,6 +62,7 @@ async function queryBeer() {
   setAutoComplete();
   await queryAllTypes();
   await queryBeersByType('Lager');
+  await queryBeerByBrewery('Heineken_International');
 }
 
 async function queryInfosOnBeer(beerName) {

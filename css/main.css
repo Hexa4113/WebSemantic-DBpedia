@@ -8,7 +8,7 @@
 body {
   margin: 0;
   color: black;
-  font-family: 'Source Sans Pro', Helvetica, sans-serif;
+  font-family: "Source Sans Pro", Helvetica, sans-serif;
   font-size: 20px;
 }
 
@@ -36,7 +36,7 @@ h1 {
 
 h3 {
   font-size: 40px;
-  font-family: 'Lora';
+  font-family: "Lora";
 }
 
 #menu {
@@ -58,7 +58,7 @@ h3 {
 #banner {
   width: 100%;
   height: 600px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../Biere_wallpaper.jpg');
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../Biere_wallpaper.jpg");
   background-position-x: center;
   background-repeat: no-repeat;
   display: flex;
@@ -72,7 +72,7 @@ h3 {
   margin-top: -30px;
   font-style: italic;
   font-size: 20px;
-  font-family: 'Lora';
+  font-family: "Lora";
 }
 
 #search {
@@ -86,7 +86,7 @@ h3 {
 #searchBar {
   display: inline-block;
   width: 300px;
-  font-family: 'Source Sans Pro', Helvetica, sans-serif;
+  font-family: "Source Sans Pro", Helvetica, sans-serif;
   text-align: left;
 }
 
@@ -104,8 +104,8 @@ h3 {
   border: 1px solid #ccc;
   border-collapse: true;
   cursor: pointer;
-  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+    0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
 }
 
 #searchResult > div:hover {
@@ -149,7 +149,7 @@ h3 {
   position: fixed;
   top: 0%;
   left: -100%;
-  transition: all 0.5s cubic-bezier(0.215, 0.610, 0.355, 1);
+  transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 #modal-beer button {
@@ -176,8 +176,8 @@ h3 {
   border-radius: 10px;
   padding-bottom: 10px;
   width: 80%;
-  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
-    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2.8px 2.2px rgba(0, 0, 0, 0.034), 0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06), 0 22.3px 17.9px rgba(0, 0, 0, 0.072),
+    0 41.8px 33.4px rgba(0, 0, 0, 0.086), 0 100px 80px rgba(0, 0, 0, 0.12);
   /* transform: translateX(-1000px); */
   position: absolute;
   top: 50%;
@@ -204,18 +204,19 @@ h3 {
   padding: 20px;
 }
 
-#tableInfos tr:nth-child(even) {background-color: rgb(231, 231, 231);}
+#tableInfos tr:nth-child(even) {
+  background-color: rgb(231, 231, 231);
+}
 
-#countries{
+#countries {
   width: 80%;
   margin: 0 auto 0 auto;
 }
 
-#brewery{
+#brewery {
   width: 80%;
   margin: 0 auto 0 auto;
 }
-
 
 #countries ul {
   list-style-type: none;
@@ -254,7 +255,7 @@ h3 {
 .container-dark {
   background-color: var(--dark-background);
   padding: 10px 0 10px 0;
-  margin: 20px 0 0 0;
+  margin: 0 0 0 0;
   color: white;
   position: relative;
 }
@@ -310,14 +311,14 @@ h3 {
   position: fixed;
   width: 100%;
   height: 100%;
-  background: rgb(255,164,46);
-  background: linear-gradient(41deg, rgba(255,164,46,1) 0%, rgba(36,33,80,1) 100%);  top: 0%;
+  background-color: white;
   left: 0%;
   transition-duration: 1s;
 }
 
 .spinner {
-  color: white;
+  color: black;
+
   font-size: 90px;
   text-indent: -9999em;
   overflow: hidden;
@@ -396,6 +397,21 @@ h3 {
     -webkit-transform: rotate(360deg);
     transform: rotate(360deg);
   }
+}
+
+footer {
+  position: relative;
+  display: block;
+  color: rgb(190, 190, 190);
+  background-color: var(--dark-background);
+  font-size: 16px;
+  padding: 20px;
+  /* bottom: 0%;
+  left: 0%; */
+}
+
+footer > div {
+  margin-left: 50px;
 }
 
 .custom-shape-divider-bottom-1607529528 {
