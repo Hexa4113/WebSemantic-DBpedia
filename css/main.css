@@ -405,7 +405,7 @@ footer {
   color: rgb(190, 190, 190);
   background-color: var(--dark-background);
   font-size: 16px;
-  padding: 20px;
+  padding: 30px 20px 30px 20px;
   /* bottom: 0%;
   left: 0%; */
 }
