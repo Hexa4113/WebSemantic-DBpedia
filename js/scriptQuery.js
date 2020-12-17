@@ -29,7 +29,7 @@ async function queryBeer() {
     '{?beer dct:subject dbc:Types_of_beer}',
     'Minus',
     '{?beer rdfs:label ?label.',
-    'filter regex(?label, "(Group|Anheuser-Busch InBev|Isle of Man Pure Beer Act|Group|Corporation|Compa|GABS Hottest 100 Aussie Craft Beers of the Year|trademark|Association|Holding|Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)","i").}',
+    'filter regex(?label, "(Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
     '}',
 
     'ORDER BY ASC(?beer)',
@@ -105,22 +105,22 @@ async function queryInfosOnBeer(beerName) {
       '{<http://dbpedia.org/resource/' + beer.id + '> dbp:style ?type}',
       'UNION',
       '{',
-        '{<http://dbpedia.org/resource/' + beer.id + '> dbo:manufacturer ?brewery}',
-        'Union',
-        '{<http://dbpedia.org/resource/' + beer.id + '> dbp:brewery ?brewery}',
-        'Union',
-        '{  ',
-          '{{?brewery dbo:product dbr:Beer}',
-          'UNION',
-          '{?brewery rdf:type dbo:Brewery}',
-          'UNION',
-          '{?brewery plg:hypernym dbr:Brewery}',
-          'UNION ',
-          '{?brewery dbo:industry dbr:Brewing}}',
-          '?brewery rdfs:label ?name.',
-          '<http://dbpedia.org/resource/' + beer.id + '> dbo:abstract ?desc .',
-          'filter regex(?desc,CONCAT("(", ?name, ")"),"i").',
-        '}',
+      '{<http://dbpedia.org/resource/' + beer.id + '> dbo:manufacturer ?brewery}',
+      'Union',
+      '{<http://dbpedia.org/resource/' + beer.id + '> dbp:brewery ?brewery}',
+      'Union',
+      '{  ',
+      '{{?brewery dbo:product dbr:Beer}',
+      'UNION',
+      '{?brewery rdf:type dbo:Brewery}',
+      'UNION',
+      '{?brewery plg:hypernym dbr:Brewery}',
+      'UNION ',
+      '{?brewery dbo:industry dbr:Brewing}}',
+      '?brewery rdfs:label ?name.',
+      '<http://dbpedia.org/resource/' + beer.id + '> dbo:abstract ?desc .',
+      'filter regex(?desc,CONCAT("(", ?name, ")"),"i").',
+      '}',
       '}',
 
       'UNION',
@@ -128,7 +128,7 @@ async function queryInfosOnBeer(beerName) {
       '{{?type dct:subject dbc:Beer_styles.}',
       'UNION',
       '{?type dct:subject dbc:Types_of_beer.}}',
-      
+
       '?type rdfs:label ?label.',
       '<http://dbpedia.org/resource/' + beer.id + '> dbo:abstract ?desc.',
       'filter regex(?desc,CONCAT("(", ?label, ")"),"i").',
@@ -157,7 +157,7 @@ async function queryInfosOnBeer(beerName) {
         let introduced = document.createElement('div');
         let introducedFound = false;
 
-        let type = document.createElement('div');
+        let type = document.createElement('td');
         let tabType = [];
 
         let brewery = document.createElement('div');
@@ -177,13 +177,13 @@ async function queryInfosOnBeer(beerName) {
           } else if (res[i].origin) {
             let o = res[i].origin.value;
             let val = o.substring(o.lastIndexOf('/') + 1);
-            origin.innerHTML = "<a href='#countries' onclick=\"highlightCountry('"+val+"')\"> "+val+"</a>";
+            origin.innerHTML = "<a href='#countries' onclick=\"highlightCountry('" + val + '\')"> ' + val + '</a>';
             originFound = true;
           } else if (res[i].origin2 && !originFound) {
             const regex = /^http:\/\/dbpedia\.org\/resource\/Category:Beer_in.+$/gm;
             if (res[i].origin2.value.match(regex)) {
               let val = res[i].origin2.value.substring(res[i].origin2.value.lastIndexOf('_') + 1);
-              origin.innerHTML = "<a href='#countries' onclick=\"highlightCountry('"+val+"')\"> "+val+"</a>";
+              origin.innerHTML = "<a href='#countries' onclick=\"highlightCountry('" + val + '\')"> ' + val + '</a>';
             }
           } else if (res[i].abv) {
             let val = res[i].abv.value;
@@ -200,7 +200,6 @@ async function queryInfosOnBeer(beerName) {
             if (!tabType.includes(val)) {
               tabType.push(val);
             }
-
           } else if (res[i].brewery) {
             let val = res[i].brewery.value.substring(res[i].brewery.value.lastIndexOf('/') + 1);
             if (!tabBrewery.includes(val)) {
@@ -215,7 +214,8 @@ async function queryInfosOnBeer(beerName) {
           for (let i in tabType) {
             let a = document.createElement('div');
             console.log(a);
-            a.innerHTML = "<a href='#typesOfBeer' onclick=\"highlightTypeBeers('"+tabType[i]+"')\"> "+tabType[i]+"</a>";
+            a.innerHTML =
+              "<a href='#typesOfBeer' onclick=\"highlightTypeBeers('" + tabType[i] + '\')"> ' + tabType[i] + '</a>';
             type.appendChild(a);
           }
         }
@@ -225,7 +225,8 @@ async function queryInfosOnBeer(beerName) {
           for (let i in tabBrewery) {
             let a = document.createElement('div');
             console.log(a);
-            a.innerHTML = "<a href='#brewery' onclick=\"highlightBreweryBeers('"+tabBrewery[i]+"')\"> "+tabBrewery[i]+"</a>";
+            a.innerHTML =
+              "<a href='#brewery' onclick=\"highlightBreweryBeers('" + tabBrewery[i] + '\')"> ' + tabBrewery[i] + '</a>';
             brewery.appendChild(a);
           }
         }
@@ -361,10 +362,10 @@ async function queryBeersByType(type) {
 }
 
 async function queryBeerByCountry(country) {
-  var countryNameContainer = document.getElementById("countryName");
+  var countryNameContainer = document.getElementById('countryName');
   var countryPrettier = country[0].toUpperCase() + country.substring(1);
-  countryPrettier = countryPrettier.replace("_", " ");
-  countryNameContainer.innerHTML= countryPrettier;
+  countryPrettier = countryPrettier.replace('_', ' ');
+  countryNameContainer.innerHTML = countryPrettier;
   var url = 'http://dbpedia.org/sparql';
   var query = [
     'PREFIX plg: <http://purl.org/linguistics/gold/>',
@@ -387,7 +388,7 @@ async function queryBeerByCountry(country) {
     '{?beer dct:subject dbc:Types_of_beer}',
     'Minus',
     '{?beer rdfs:label ?label.',
-    'filter regex(?label, "(Group|Anheuser-Busch InBev|Isle of Man Pure Beer Act|Group|Corporation|Compa|GABS Hottest 100 Aussie Craft Beers of the Year|trademark|Association|Holding|Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)","i").}',
+    'filter regex(?label, "(Beer in|Bierbrouwers|Smithwick\'s Experience|Society|Brouwerij|High council|New Garden|Beer Festival|Beer Awards|National Beer Day|List|[Bb]eer in|[Bb]rewer|[Bb]rewhouse|[Bb]rasserie|film|[Bb]rewing|[Cc]ompany|Champion|Guide)"). }',
     '}',
 
     'ORDER BY ASC(?beer)',
@@ -406,9 +407,10 @@ async function queryBeerByCountry(country) {
       console.log(res);
       let containerList = document.querySelector('#beerByCountry');
       containerList.innerHTML = '';
-      
+
       for (let i = 0; i < res.length; i++) {
         const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
+        // if (aBeer) {
         let divBeerType = document.createElement('div');
         divBeerType.className = 'beerType';
         divBeerType.innerHTML = aBeer.name;
@@ -416,15 +418,16 @@ async function queryBeerByCountry(country) {
           queryInfosOnBeer(aBeer.name);
         });
         containerList.appendChild(divBeerType);
+        // }
       }
     });
 }
 
-async function queryBeerByBrewery(brewery){
-  var breweryNameContainer = document.getElementById("breweryName");
+async function queryBeerByBrewery(brewery) {
+  var breweryNameContainer = document.getElementById('breweryName');
   var breweryPrettier = brewery[0].toUpperCase() + brewery.substring(1);
-  breweryPrettier = breweryPrettier.replace("_", " ");
-  breweryNameContainer.innerHTML= breweryPrettier;
+  breweryPrettier = breweryPrettier.replace('_', ' ');
+  breweryNameContainer.innerHTML = breweryPrettier;
 
   var url = 'http://dbpedia.org/sparql';
   var query = [
@@ -436,12 +439,12 @@ async function queryBeerByBrewery(brewery){
     '{?beer dbp:brewery <http://dbpedia.org/resource/' + brewery + '>}',
     'Union',
     '{ ',
-        '{{?beer dbp:type dbr:Beer.}',
-        'UNION',
-        '{?beer plg:hypernym dbr:Beer}',
-        'UNION',
-        '{?e skos:broader  dbc:Beer_by_country.',
-        '?beer dct:subject ?e .}}',
+    '{{?beer dbp:type dbr:Beer.}',
+    'UNION',
+    '{?beer plg:hypernym dbr:Beer}',
+    'UNION',
+    '{?e skos:broader  dbc:Beer_by_country.',
+    '?beer dct:subject ?e .}}',
     '?beer dbo:abstract ?description.',
     '<http://dbpedia.org/resource/' + brewery + '> rdfs:label ?label.',
     'filter regex(?description,CONCAT("(", ?label, ")"),"i").',
@@ -476,16 +479,18 @@ async function queryBeerByBrewery(brewery){
       console.log(res);
       let containerList = document.querySelector('#beersByBrewery');
       containerList.innerHTML = '';
-      
+
       for (let i = 0; i < res.length; i++) {
         const aBeer = allBeers.find((x) => x.link == res[i].beer.value);
-        let divBeerType = document.createElement('div');
-        divBeerType.className = 'beerType';
-        divBeerType.innerHTML = aBeer.name;
-        divBeerType.addEventListener('click', (e) => {
-          queryInfosOnBeer(aBeer.name);
-        });
-        containerList.appendChild(divBeerType);
+        if (aBeer) {
+          let divBeerType = document.createElement('div');
+          divBeerType.className = 'beerType';
+          divBeerType.innerHTML = aBeer.name;
+          divBeerType.addEventListener('click', (e) => {
+            queryInfosOnBeer(aBeer.name);
+          });
+          containerList.appendChild(divBeerType);
+        }
       }
     });
 }
@@ -535,18 +540,18 @@ function closeModal() {
   modal.style.left = '-100%';
 }
 
-function highlightCountry(countryName){
+function highlightCountry(countryName) {
   var country_name = countryName.toLowerCase();
   closeModal();
   queryBeerByCountry(country_name);
 }
 
-function highlightBreweryBeers(brewery){
+function highlightBreweryBeers(brewery) {
   closeModal();
   queryBeerByBrewery(brewery);
 }
 
-function highlightTypeBeers(type){
+function highlightTypeBeers(type) {
   closeModal();
   queryBeersByType(type);
   document.getElementById('selectTypeOfBeer').value = type;
